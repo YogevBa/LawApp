@@ -6,7 +6,7 @@ import Card from '@/components/Card';
 import Button from '@/components/Button';
 import { useLanguage } from '@/localization/i18n';
 import LanguageSelector from '@/components/LanguageSelector';
-import { getApiKey, saveApiKey } from '@/config';
+// API key management moved to env file
 
 import { Fine } from '@/store/finesSlice';
 
@@ -22,19 +22,7 @@ declare global {
 
 export default function ProfileScreen() {
   const [logoutModalVisible, setLogoutModalVisible] = useState(false);
-  const [apiKeyModalVisible, setApiKeyModalVisible] = useState(false);
-  const [apiKey, setApiKey] = useState('');
-  const [tempApiKey, setTempApiKey] = useState('');
   const { t, locale } = useLanguage(); // Use the language context
-  
-  // Load API key on component mount
-  useEffect(() => {
-    const loadApiKey = async () => {
-      const key = await getApiKey();
-      setApiKey(key);
-    };
-    loadApiKey();
-  }, []);
   
   // Define user data interface
   interface UserData {
@@ -96,25 +84,7 @@ export default function ProfileScreen() {
     console.log(`Language changed to: ${newLang}`);
   };
 
-  // Open API key modal
-  const openApiKeyModal = (): void => {
-    setTempApiKey(apiKey);
-    setApiKeyModalVisible(true);
-  };
-
-  // Save API key
-  const handleSaveApiKey = async (): Promise<void> => {
-    console.log("Saving API key:", tempApiKey ? `${tempApiKey.substring(0, 4)}...${tempApiKey.substring(tempApiKey.length - 4)}` : "empty key");
-    const saved = await saveApiKey(tempApiKey);
-    console.log("API key saved successfully:", saved);
-    setApiKey(tempApiKey);
-    setApiKeyModalVisible(false);
-    Alert.alert('Success', 'API key saved successfully');
-    
-    // Verify the key was saved by reading it back
-    const verifiedKey = await getApiKey();
-    console.log("Verified saved API key:", verifiedKey ? "Key was retrieved" : "No key found");
-  };
+  // API key management removed
 
   return (
     <SafeAreaView style={styles.container}>
@@ -196,13 +166,7 @@ export default function ProfileScreen() {
           {/* Add Language Selector */}
           <LanguageSelector onLanguageChange={handleLanguageChange} />
           
-          {/* API Key Setting */}
-          <TouchableOpacity style={styles.settingRow} onPress={openApiKeyModal}>
-            <Text style={styles.settingText}>API Key</Text>
-            <Text style={styles.settingValue}>
-              {apiKey ? '••••••••' + apiKey.slice(-4) : 'Not Set'}
-            </Text>
-          </TouchableOpacity>
+          {/* API Key Setting removed - now using env file */}
           
           <TouchableOpacity style={styles.settingRow}>
             <Text style={styles.settingText}>{t('privacySettings')}</Text>
@@ -253,47 +217,7 @@ export default function ProfileScreen() {
           </View>
         </Modal>
         
-        {/* API Key Modal */}
-        <Modal
-          animationType="fade"
-          transparent={true}
-          visible={apiKeyModalVisible}
-          onRequestClose={() => setApiKeyModalVisible(false)}
-        >
-          <View style={styles.modalOverlay}>
-            <View style={styles.modalContainer}>
-              <Text style={styles.modalTitle}>API Key</Text>
-              <Text style={styles.modalText}>
-                Enter your OpenAI API key. This will be stored securely on your device.
-              </Text>
-              
-              <TextInput
-                style={styles.apiKeyInput}
-                value={tempApiKey}
-                onChangeText={setTempApiKey}
-                placeholder="Enter API key"
-                placeholderTextColor={COLORS.gray}
-                secureTextEntry={false}
-              />
-              
-              <View style={styles.modalButtonContainer}>
-                <TouchableOpacity 
-                  style={[styles.modalButton, styles.cancelButton]}
-                  onPress={() => setApiKeyModalVisible(false)}
-                >
-                  <Text style={styles.cancelButtonText}>Cancel</Text>
-                </TouchableOpacity>
-                
-                <TouchableOpacity 
-                  style={[styles.modalButton, styles.logoutButton]}
-                  onPress={handleSaveApiKey}
-                >
-                  <Text style={styles.logoutButtonText}>Save</Text>
-                </TouchableOpacity>
-              </View>
-            </View>
-          </View>
-        </Modal>
+        {/* API Key Modal removed */}
       </ScrollView>
     </SafeAreaView>
   );

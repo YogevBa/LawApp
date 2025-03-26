@@ -1,10 +1,11 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import config from '../config';
 import i18n from '../localization/i18n';
-import { getApiKey } from '../config';
+import ENV from '../.env.js';
 
-// Use the API key from config - in production this should be handled by a backend
-const API_URL = config.API_URL;
+// API URL for OpenAI
+const API_URL = ENV.API_URL;
+const DEFAULT_MODEL = ENV.DEFAULT_MODEL;
+const USE_MOCK_DATA = ENV.USE_MOCK_DATA;
 
 /**
  * Mock analyses for different fine scenarios
@@ -46,6 +47,45 @@ const mockAnalyses = {
 };
 
 /**
+ * Retrieves API key from various sources
+ * First checks AsyncStorage, then falls back to .env
+ */
+const getApiKey = async () => {
+  try {
+    // Try to get API key from AsyncStorage first (user-provided key)
+    const storedApiKey = await AsyncStorage.getItem('@openai_api_key');
+    if (storedApiKey) {
+      return storedApiKey;
+    }
+    // Fall back to environment variable if available
+    if (ENV.OPENAI_API_KEY) {
+      return ENV.OPENAI_API_KEY;
+    }
+    return ""; // Return empty string if not found
+  } catch (error) {
+    console.error('Error loading API key:', error);
+    // Fall back to environment variable if available
+    if (ENV.OPENAI_API_KEY) {
+      return ENV.OPENAI_API_KEY;
+    }
+    return "";
+  }
+};
+
+/**
+ * Function to save API key to AsyncStorage
+ */
+const saveApiKey = async (apiKey) => {
+  try {
+    await AsyncStorage.setItem('@openai_api_key', apiKey);
+    return true;
+  } catch (error) {
+    console.error('Error saving API key:', error);
+    return false;
+  }
+};
+
+/**
  * Analyzes a fine report using OpenAI's GPT model
  * @param {Object} fineReport - The fine report data
  * @returns {Promise<Object>} - Analysis results including recommendation
@@ -71,7 +111,7 @@ export async function analyzeFineReport(fineReport) {
     console.log("No cached result found, proceeding with API call");
     
     // Check if we should use mock data
-    if (config.USE_MOCK_DATA) {
+    if (USE_MOCK_DATA) {
       console.log("Using mock data for analysis");
       // Select a random mock analysis
       const mockResults = Object.values(mockAnalyses);
@@ -79,9 +119,9 @@ export async function analyzeFineReport(fineReport) {
       return randomMock;
     }
     
-    // Get API key from AsyncStorage using the function from config.js
+    // Get API key
     const apiKey = await getApiKey();
-    console.log("Retrieved API key from storage for analysis:", apiKey ? "API key found" : "No API key found");
+    console.log("Retrieved API key for analysis:", apiKey ? "API key found" : "No API key found");
     if (!apiKey) {
       console.error("OpenAI API key is missing");
       throw new Error('OpenAI API key is missing - please set an API key in your profile settings');
@@ -96,7 +136,7 @@ export async function analyzeFineReport(fineReport) {
     
     // Make request to OpenAI API
     console.log("Making request to OpenAI API at:", API_URL);
-    console.log("Using model:", config.DEFAULT_MODEL);
+    console.log("Using model:", DEFAULT_MODEL);
     
     // Determine system message based on language
     let systemMessage = '';
@@ -107,7 +147,7 @@ export async function analyzeFineReport(fineReport) {
     }
     
     const requestBody = {
-      model: config.DEFAULT_MODEL,
+      model: DEFAULT_MODEL,
       messages: [
         {
           role: 'system',
@@ -393,14 +433,14 @@ Badge Number: ${fineReport.badgeNumber || 'Not specified'}
     }
     
     // Check if we should use mock data
-    if (config.USE_MOCK_DATA) {
+    if (USE_MOCK_DATA) {
       console.log("Using mock data for cancellation request");
       return generateMockCancellationResponse(fineReport, fullAuto, currentLocale);
     }
     
-    // Get API key from AsyncStorage using the function from config.js
+    // Get API key
     const apiKey = await getApiKey();
-    console.log("Retrieved API key from storage for cancellation:", apiKey ? "API key found" : "No API key found");
+    console.log("Retrieved API key for cancellation:", apiKey ? "API key found" : "No API key found");
     if (!apiKey) {
       console.error("OpenAI API key is missing");
       throw new Error('OpenAI API key is missing - please set an API key in your profile settings');
@@ -419,7 +459,7 @@ Badge Number: ${fineReport.badgeNumber || 'Not specified'}
           'Authorization': `Bearer ${apiKey}`
         },
         body: JSON.stringify({
-          model: config.DEFAULT_MODEL,
+          model: DEFAULT_MODEL,
           messages: [
             {
               role: 'system',
@@ -599,3 +639,5 @@ Date`,
     }
   }
 }
+
+// API key management is now handled internally
