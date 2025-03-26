@@ -2,7 +2,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import config from '../config';
 import i18n from '../localization/i18n';
 
-// Use the API key from config - in production this should be handled by a backend
+// Use the API key from config which is loaded from environment variables
 const API_URL = config.API_URL;
 
 /**
@@ -80,9 +80,11 @@ export async function analyzeFineReport(fineReport) {
     
     // For real API usage, api key would be required
     if (!config.OPENAI_API_KEY) {
-      console.error("OpenAI API key is missing");
-      throw new Error('OpenAI API key is missing - please set up a backend service to securely use API keys');
+      console.error("OpenAI API key is missing - check your .env file");
+      throw new Error('OpenAI API key is missing - please check your .env file contains EXPO_LOCAL_OPENAI_API_KEY');
     }
+    
+    console.log("Using API key from environment variables");
     
     // Construct prompt for GPT
     const prompt = constructFineAnalysisPrompt(fineReport, currentLocale);
@@ -388,9 +390,11 @@ Badge Number: ${fineReport.badgeNumber || 'Not specified'}
     
     // For real API usage, api key would be required
     if (!config.OPENAI_API_KEY) {
-      console.error("OpenAI API key is missing");
-      throw new Error('OpenAI API key is missing - please set up a backend service to securely use API keys');
+      console.error("OpenAI API key is missing - check your .env file");
+      throw new Error('OpenAI API key is missing - please check your .env file contains EXPO_LOCAL_OPENAI_API_KEY');
     }
+    
+    console.log("Using API key from environment variables for cancellation request");
     
     // Make request to OpenAI API
     try {

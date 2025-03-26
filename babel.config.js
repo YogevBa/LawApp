@@ -4,7 +4,9 @@ module.exports = function(api) {
     presets: ['babel-preset-expo'],
     plugins: [
       'expo-router/babel',
-      'react-native-reanimated/plugin'
+      'react-native-reanimated/plugin',
+      // Enable inline environment variables for React Native
+      ["transform-inline-environment-variables"]
     ],
   };
 };
