@@ -355,9 +355,9 @@ export async function generateCancellationRequest(fineReport, additionalInfo = '
       }
 
       if (fullAuto) {
-        promptContent += `\nצור מכתב בקשת ביטול מלא, רשמי ומקצועי עם כל המרכיבים הדרושים כולל כתובת, תאריך, שורת נושא, פנייה נאותה, פסקאות גוף, סיום, ומקום לחתימה.`;
+        promptContent += `\nצור מכתב בקשת ביטול מלא, רשמי ומקצועי עם כל המרכיבים הדרושים כולל כתובת, תאריך, שורת נושא, פנייה נאותה, פסקאות גוף, סיום, ומקום לחתימה. חשוב ביותר: המכתב חייב להיות מבוסס רק על העובדות שסופקו. אין להמציא פרטים, תירוצים, או לשקר בכל צורה שהיא.`;
       } else {
-        promptContent += `\nספק נקודות מרכזיות של טיעונים חזקים בהם אני יכול להשתמש כדי לערער על קנס זה, תוך התמקדות בהיבטים טכניים ופרוצדורליים ולא בנסיבות אישיות.`;
+        promptContent += `\nספק נקודות מרכזיות של טיעונים אמיתיים בהם אני יכול להשתמש כדי לערער על קנס זה, בהתבסס רק על המידע שסופק. אין להמציא או להציע נקודות שאינן אמת או שאינן מבוססות במידע שסופק. התמקד בהיבטים טכניים ופרוצדורליים הקשורים למידע שניתן, ולא בנסיבות אישיות.`;
       }
     } else {
       promptContent = `
@@ -378,18 +378,18 @@ Badge Number: ${fineReport.badgeNumber || 'Not specified'}
       }
 
       if (fullAuto) {
-        promptContent += `\nGenerate a complete, formal and professional cancellation request letter with all necessary components including address, date, subject line, proper salutation, body paragraphs, closing, and space for signature.`;
+        promptContent += `\nGenerate a complete, formal and professional cancellation request letter with all necessary components including address, date, subject line, proper salutation, body paragraphs, closing, and space for signature. CRITICAL: The letter must be based ONLY on the facts provided. Do NOT invent details, make up excuses, or include any false information whatsoever.`;
       } else {
-        promptContent += `\nProvide bullet points of strong arguments I can use to contest this fine, focusing on technical and procedural aspects rather than personal circumstances.`;
+        promptContent += `\nProvide bullet points of factual arguments I can use to contest this fine, based STRICTLY on the information provided. Do NOT invent or suggest points that are not truthful or not based on the information given. Focus on technical and procedural aspects related to the provided information, rather than personal circumstances.`;
       }
     }
     
     // Set system message based on language
     let systemMessage = '';
     if (currentLocale === 'he') {
-      systemMessage = 'אתה עוזר משפטי המתמחה בכתיבת בקשות ביטול קנסות יעילות. תפקידך הוא ליצור בקשות ביטול מקצועיות, משכנעות ומבוססות משפטית על סמך הפרטים שסופקו. התשובה שלך חייבת להיות בעברית.';
+      systemMessage = 'אתה עוזר משפטי המתמחה בכתיבת בקשות ביטול קנסות יעילות. תפקידך הוא ליצור בקשות ביטול מקצועיות ומבוססות אך ורק על המידע שסופק על ידי המשתמש. חשוב ביותר: אסור בהחלט להמציא או להוסיף פרטים שלא סופקו, להמציא תירוצים, או לטעון טענות שאינן מבוססות על המידע שניתן. היצמד באופן מוחלט לעובדות שסופקו, ואל תכלול שום מידע מומצא או תירוצים שקריים בבקשה. התשובה שלך חייבת להיות בעברית.';
     } else {
-      systemMessage = 'You are a legal assistant specializing in writing effective fine cancellation requests. Your task is to generate professional, persuasive, and legally sound cancellation requests based on the details provided.';
+      systemMessage = 'You are a legal assistant specializing in writing effective fine cancellation requests. Your task is to generate professional and factual requests based STRICTLY on the information provided by the user. CRITICAL: You must NOT invent or add details that were not supplied, fabricate excuses, or make claims not supported by the provided information. Stick ONLY to the facts given, and do not include any made-up information or false excuses in the request.';
     }
     
     // Check if we should use mock data
