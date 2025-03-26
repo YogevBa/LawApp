@@ -17,7 +17,10 @@
     "build:apk": "npx eas build -p android --profile apk",
     "build:local-apk": "chmod +x ./build-local-apk.sh && ./build-local-apk.sh",
     "build:robust-apk": "chmod +x ./build-robust-apk.sh && ./build-robust-apk.sh",
-    "apply-patches": "chmod +x ./apply-patches.sh && ./apply-patches.sh"
+    "apply-patches": "chmod +x ./apply-patches.sh && ./apply-patches.sh",
+    "clear-cache": "expo start --clear",
+    "fix-router": "node ./scripts/fix-router.js",
+    "deep-clean": "node ./scripts/deep-clean.js"
   },
   "jest": {
     "preset": "jest-expo"

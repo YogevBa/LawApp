@@ -1,16 +1,6 @@
-import React from 'react';
-import { StatusBar } from 'react-native';
-import { Provider } from 'react-redux';
-import { COLORS } from './constants/theme';
-import store from './store/store';
-
-const App = () => {
-  return (
-    <Provider store={store}>
-      <StatusBar backgroundColor={COLORS.primary} barStyle="light-content" />
-      {/* Expo Router will manage navigation */}
-    </Provider>
-  );
-};
-
-export default App;
+// This file is not used when expo-router is active
+// All routing is handled by the files in the app/ directory
+// See app/_layout.tsx and app/index.js
+export default function App() {
+  return null;
+}

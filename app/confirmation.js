@@ -63,7 +63,7 @@ export default function ConfirmationScreen() {
         
         <Button
           title={t('backToHome')}
-          onPress={() => router.push('/login')}
+          onPress={() => router.replace('/(tabs)')}
           style={styles.button}
         />
         

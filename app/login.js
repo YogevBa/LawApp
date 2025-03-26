@@ -44,7 +44,10 @@ export default function LoginScreen() {
     if (validateInputs()) {
       // In a real app, we would authenticate with a server here
       console.log('Login with:', email, password);
-      router.push('/(tabs)');
+      
+      // Navigate to the tabs index page which we just created
+      // Using replace to completely replace the login screen (not allowing back navigation)
+      router.replace('/(tabs)');
     }
   };
 

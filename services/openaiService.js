@@ -1,6 +1,7 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import config from '../config';
 import i18n from '../localization/i18n';
+import { getApiKey } from '../config';
 
 // Use the API key from config - in production this should be handled by a backend
 const API_URL = config.API_URL;
@@ -78,11 +79,16 @@ export async function analyzeFineReport(fineReport) {
       return randomMock;
     }
     
-    // For real API usage, api key would be required
-    if (!config.OPENAI_API_KEY) {
+    // Get API key from AsyncStorage using the function from config.js
+    const apiKey = await getApiKey();
+    console.log("Retrieved API key from storage for analysis:", apiKey ? "API key found" : "No API key found");
+    if (!apiKey) {
       console.error("OpenAI API key is missing");
-      throw new Error('OpenAI API key is missing - please set up a backend service to securely use API keys');
+      throw new Error('OpenAI API key is missing - please set an API key in your profile settings');
     }
+    
+    // Additional logging for debugging
+    console.log("API call will be made with this key for analysis")
     
     // Construct prompt for GPT
     const prompt = constructFineAnalysisPrompt(fineReport, currentLocale);
@@ -123,7 +129,7 @@ export async function analyzeFineReport(fineReport) {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${config.OPENAI_API_KEY}`
+          'Authorization': `Bearer ${apiKey}`
         },
         body: JSON.stringify(requestBody)
       });
@@ -131,9 +137,15 @@ export async function analyzeFineReport(fineReport) {
       console.log("Response status:", response.status);
       
       if (!response.ok) {
-        const errorData = await response.json();
-        console.error("API error:", errorData);
-        throw new Error(`OpenAI API error: ${errorData.error?.message || 'Unknown error'}`);
+        try {
+          const errorData = await response.json();
+          console.error("API error data:", JSON.stringify(errorData));
+          throw new Error(`OpenAI API error: ${errorData.error?.message || JSON.stringify(errorData)}`);
+        } catch (parseError) {
+          console.error("Error parsing API error response:", parseError);
+          console.error("Status code:", response.status, "Status text:", response.statusText);
+          throw new Error(`API error: ${response.status} ${response.statusText}`);
+        }
       }
       
       console.log("Response OK, parsing JSON");
@@ -386,11 +398,16 @@ Badge Number: ${fineReport.badgeNumber || 'Not specified'}
       return generateMockCancellationResponse(fineReport, fullAuto, currentLocale);
     }
     
-    // For real API usage, api key would be required
-    if (!config.OPENAI_API_KEY) {
+    // Get API key from AsyncStorage using the function from config.js
+    const apiKey = await getApiKey();
+    console.log("Retrieved API key from storage for cancellation:", apiKey ? "API key found" : "No API key found");
+    if (!apiKey) {
       console.error("OpenAI API key is missing");
-      throw new Error('OpenAI API key is missing - please set up a backend service to securely use API keys');
+      throw new Error('OpenAI API key is missing - please set an API key in your profile settings');
     }
+    
+    // Additional logging for debugging
+    console.log("API call will be made with this key for cancellation")
     
     // Make request to OpenAI API
     try {
@@ -399,7 +416,7 @@ Badge Number: ${fineReport.badgeNumber || 'Not specified'}
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${config.OPENAI_API_KEY}`
+          'Authorization': `Bearer ${apiKey}`
         },
         body: JSON.stringify({
           model: config.DEFAULT_MODEL,
@@ -420,8 +437,15 @@ Badge Number: ${fineReport.badgeNumber || 'Not specified'}
       console.log("Cancellation request API response status:", response.status);
       
       if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(`OpenAI API error: ${errorData.error?.message || 'Unknown error'}`);
+        try {
+          const errorData = await response.json();
+          console.error("API error data:", JSON.stringify(errorData));
+          throw new Error(`OpenAI API error: ${errorData.error?.message || JSON.stringify(errorData)}`);
+        } catch (parseError) {
+          console.error("Error parsing API error response:", parseError);
+          console.error("Status code:", response.status, "Status text:", response.statusText);
+          throw new Error(`API error: ${response.status} ${response.statusText}`);
+        }
       }
       
       const data = await response.json();
