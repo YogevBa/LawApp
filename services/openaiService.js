@@ -321,10 +321,20 @@ function parseAnalysisResponse(responseText) {
                            responseText.match(/### Key Points(.+?)(?=###|$)/s);
     if (keyPointsMatch && keyPointsMatch[1]) {
       // Split by numbered points or bullet points
-      result.keyPoints = keyPointsMatch[1]
+      let keyPoints = keyPointsMatch[1]
         .split(/\d+\.|\n-|\n•|\*\*\*\*|\n\d+\)/)
         .map(point => point.trim())
         .filter(point => point.length > 0);
+      
+      // Fix Hebrew points with a colon after the first letter and remove asterisks
+      if (i18n.locale === 'he') {
+        keyPoints = keyPoints.map(point => {
+          // Remove colon after first letter and any extra whitespace, and remove asterisks
+          return point.replace(/^(.):\s*/,'$1').replace(/\*/g, '');
+        });
+      }
+      
+      result.keyPoints = keyPoints;
     }
     
     // Extract recommendation

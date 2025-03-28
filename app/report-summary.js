@@ -660,6 +660,15 @@ export default function ReportSummaryScreen() {
     // If no summary, return empty array
     if (!summary) return [];
     
+    // Apply RTL text fixes for Hebrew content after extraction
+    const cleanHebrewText = (text) => {
+      if (!isRTL) return text;
+      return text
+        .replace(/^(.):\s*/gm, '$1') // Fix colon after first letter
+        .replace(/\*/g, '')          // Remove asterisks
+        .trim();
+    };
+    
     try {
       // Look for Hebrew key points section patterns
       if (summary.includes("### נקודות מפתח") || summary.includes("נקודות מפתח:") || 
@@ -719,7 +728,7 @@ export default function ReportSummaryScreen() {
               .trim();
               
             if (cleanLine) {
-              keyPointsArray.push(cleanLine);
+              keyPointsArray.push(cleanHebrewText(cleanLine));
             }
           }
         }
@@ -754,7 +763,7 @@ export default function ReportSummaryScreen() {
             .trim();
             
           if (cleanLine) {
-            keyPointsArray.push(cleanLine);
+            keyPointsArray.push(cleanHebrewText(cleanLine));
           }
         } 
         // End list detection on empty lines or if indentation level decreases
@@ -1155,6 +1164,15 @@ export default function ReportSummaryScreen() {
       router.push('/additional-info');
     }, 50);
   };
+  
+  // Helper function to fix RTL text issues (colons after first letter, asterisks)
+  const fixRTLText = (text) => {
+    if (!text || !isRTL) return text;
+    return text
+      .replace(/^(.):\s*/gm, '$1') // Fix colon after first letter
+      .replace(/\*/g, '')          // Remove asterisks
+      .trim();
+  };
 
   return (
     <SafeAreaView style={styles.container}>
@@ -1333,12 +1351,14 @@ export default function ReportSummaryScreen() {
               <View style={{ 
                 paddingHorizontal: SIZES.medium,
                 marginBottom: SIZES.medium,
-                alignSelf: 'stretch'
+                alignSelf: 'stretch',
+                alignItems: isRTL ? 'flex-end' : 'flex-start'
               }}>
                 <Text style={[
                   styles.analysisText,
                   { 
                     textAlign: isRTL ? 'right' : 'left',
+                    writingDirection: isRTL ? 'rtl' : 'ltr',
                     width: '100%'
                   }
                 ]}>
@@ -1349,7 +1369,7 @@ export default function ReportSummaryScreen() {
                       // For Hebrew, extract just the summary section
                       if (isRTL && analysis.summary.includes('### סיכום')) {
                         const summarySection = analysis.summary.split('### סיכום')[1]?.split('###')[0]?.trim();
-                        return summarySection || t('noAnalysisText');
+                        return fixRTLText(summarySection) || t('noAnalysisText');
                       }
                       
                       // For English, extract just the summary part
@@ -1380,8 +1400,8 @@ export default function ReportSummaryScreen() {
                       }
                     }
                     
-                    // If no structured format, return the full summary
-                    return analysis.summary || t('noAnalysisText');
+                    // If no structured format, return the full summary with RTL fixes for Hebrew
+                    return isRTL ? fixRTLText(analysis.summary) : (analysis.summary || t('noAnalysisText'));
                   })()}
                 </Text>
               </View>
@@ -1415,31 +1435,43 @@ export default function ReportSummaryScreen() {
                       paddingLeft: isRTL ? SIZES.small : 0,
                       width: '100%'
                     }}>
-                      <Text style={{ marginTop: 2, marginHorizontal: 4 }}>•</Text>
+                      <Text style={{ 
+                        marginTop: isRTL ? 6 : 2,
+                        marginHorizontal: 4,
+                        textAlign: isRTL ? 'right' : 'left',
+                        writingDirection: isRTL ? 'rtl' : 'ltr'
+                      }}>•</Text>
                       <Text style={[
                         styles.bulletPoint,
                         { 
                           textAlign: isRTL ? 'right' : 'left',
+                          writingDirection: isRTL ? 'rtl' : 'ltr',
                           flex: 1,
                           marginTop: 0,
                           marginBottom: 0
                         }
                       ]}>
-                        {point}
+                        {fixRTLText(point)}
                       </Text>
                     </View>
                   ))
                 ) : (
                   <View style={{
                     flexDirection: isRTL ? 'row-reverse' : 'row',
-                    alignItems: 'flex-start',
+                    alignItems: isRTL ? 'flex-end' : 'flex-start',
                     width: '100%'
                   }}>
-                    <Text style={{ marginTop: 2, marginHorizontal: 4 }}>•</Text>
+                    <Text style={{ 
+                      marginTop: isRTL ? 6 : 2,
+                      marginHorizontal: 4,
+                      textAlign: isRTL ? 'right' : 'left',
+                      writingDirection: isRTL ? 'rtl' : 'ltr'
+                    }}>•</Text>
                     <Text style={[
                       styles.bulletPoint,
                       { 
                         textAlign: isRTL ? 'right' : 'left',
+                        writingDirection: isRTL ? 'rtl' : 'ltr',
                         flex: 1
                       }
                     ]}>
@@ -1463,16 +1495,18 @@ export default function ReportSummaryScreen() {
               <View style={{ 
                 paddingHorizontal: SIZES.medium,
                 marginBottom: SIZES.medium,
-                alignSelf: 'stretch'
+                alignSelf: 'stretch',
+                alignItems: isRTL ? 'flex-end' : 'flex-start'
               }}>
                 <Text style={[
                   styles.analysisText,
                   { 
                     textAlign: isRTL ? 'right' : 'left',
+                    writingDirection: isRTL ? 'rtl' : 'ltr',
                     width: '100%'
                   }
                 ]}>
-                  {analysis.recommendation || t('defaultRecommendation')}
+                  {fixRTLText(analysis.recommendation) || t('defaultRecommendation')}
                 </Text>
               </View>
               
@@ -1486,7 +1520,10 @@ export default function ReportSummaryScreen() {
               ]}>
                 <Text style={[
                   styles.legalButtonText,
-                  { textAlign: isRTL ? 'right' : 'left' }
+                  { 
+                    textAlign: isRTL ? 'right' : 'left',
+                    writingDirection: isRTL ? 'rtl' : 'ltr'
+                  }
                 ]}>
                   {t('legalRules')}
                 </Text>
@@ -1520,9 +1557,10 @@ export default function ReportSummaryScreen() {
             <Text style={[
               styles.sectionTitle,
               { 
-                textAlign: isRTL ? 'right' : 'left',
+                textAlign: 'center',
                 marginHorizontal: SIZES.medium,
-                marginBottom: SIZES.medium
+                marginBottom: SIZES.medium,
+                alignSelf: 'center'
               }
             ]}>{t('preliminaryConclusion')}</Text>
             {console.log("About to render conclusion with analysis:", analysis)}
