@@ -390,14 +390,25 @@ export async function generateCancellationRequest(fineReport, additionalInfo = '
 מספר תג: ${fineReport.badgeNumber || 'לא צוין'}
 `;
 
+      // Combine both the description from fineReport and any additional info
+      let userClaims = "";
+      if (fineReport.description && fineReport.description.trim().length > 0) {
+        userClaims += `\nתיאור האירוע על-ידי המשתמש:\n${fineReport.description}\n`;
+      }
+      
       if (additionalInfo && additionalInfo.trim().length > 0) {
-        promptContent += `\nמידע נוסף שסופק על ידי המקבל:\n${additionalInfo}\n`;
+        userClaims += `\nמידע נוסף שסופק על ידי המקבל:\n${additionalInfo}\n`;
+      }
+      
+      // Add the combined user claims to the prompt
+      if (userClaims.length > 0) {
+        promptContent += userClaims;
       }
 
       if (fullAuto) {
-        promptContent += `\nצור מכתב בקשת ביטול מלא, רשמי ומקצועי עם כל המרכיבים הדרושים כולל כתובת, תאריך, שורת נושא, פנייה נאותה, פסקאות גוף, סיום, ומקום לחתימה. חשוב ביותר: המכתב חייב להיות מבוסס רק על העובדות שסופקו. אין להמציא פרטים, תירוצים, או לשקר בכל צורה שהיא.`;
+        promptContent += `\nצור מכתב בקשת ביטול מלא, רשמי ומקצועי עם כל המרכיבים הדרושים כולל כתובת, תאריך, שורת נושא, פנייה נאותה, פסקאות גוף, סיום, ומקום לחתימה. חשוב מאוד: המכתב חייב לכלול באופן ספציפי ולהתייחס לטענות המשתמש ולתיאור האירוע שהובא לעיל. השתמש בגרסת האירועים שלהם כבסיס עובדתי לטיעונים. הקפד לשלב את הטענות והחששות המדויקים שלהם במקומות המתאימים, ולתמוך בהם בהנמקה משפטית.`;
       } else {
-        promptContent += `\nספק נקודות מרכזיות של טיעונים אמיתיים בהם אני יכול להשתמש כדי לערער על קנס זה, בהתבסס רק על המידע שסופק. אין להמציא או להציע נקודות שאינן אמת או שאינן מבוססות במידע שסופק. התמקד בהיבטים טכניים ופרוצדורליים הקשורים למידע שניתן, ולא בנסיבות אישיות.`;
+        promptContent += `\nספק נקודות מרכזיות של טיעונים שאני יכול להשתמש בהם כדי לערער על קנס זה, בהתבסס על המידע שסופק כולל התיאור שלי של האירוע. בנה את הנקודות הללו כך שישלבו ויתבססו על גרסת האירועים והחששות שציינתי. התמקד הן בטענות הספציפיות שלי והן בהיבטים טכניים ופרוצדורליים הקשורים למידע שניתן.`;
       }
     } else {
       promptContent = `
@@ -413,14 +424,25 @@ Officer Name: ${fineReport.officerName || 'Not specified'}
 Badge Number: ${fineReport.badgeNumber || 'Not specified'}
 `;
 
+      // Combine both the description from fineReport and any additional info
+      let userClaims = "";
+      if (fineReport.description && fineReport.description.trim().length > 0) {
+        userClaims += `\nUser's Description of Incident:\n${fineReport.description}\n`;
+      }
+      
       if (additionalInfo && additionalInfo.trim().length > 0) {
-        promptContent += `\nAdditional Information Provided by the Recipient:\n${additionalInfo}\n`;
+        userClaims += `\nAdditional Information Provided by the Recipient:\n${additionalInfo}\n`;
+      }
+      
+      // Add the combined user claims to the prompt
+      if (userClaims.length > 0) {
+        promptContent += userClaims;
       }
 
       if (fullAuto) {
-        promptContent += `\nGenerate a complete, formal and professional cancellation request letter with all necessary components including address, date, subject line, proper salutation, body paragraphs, closing, and space for signature. CRITICAL: The letter must be based ONLY on the facts provided. Do NOT invent details, make up excuses, or include any false information whatsoever.`;
+        promptContent += `\nGenerate a complete, formal and professional cancellation request letter with all necessary components including address, date, subject line, proper salutation, body paragraphs, closing, and space for signature. IMPORTANT: The letter must specifically incorporate and address the user's claims and description of the incident from above. Use their version of events as factual basis for arguments. Be sure to incorporate their exact concerns and arguments where appropriate, supporting them with legal reasoning.`;
       } else {
-        promptContent += `\nProvide bullet points of factual arguments I can use to contest this fine, based STRICTLY on the information provided. Do NOT invent or suggest points that are not truthful or not based on the information given. Focus on technical and procedural aspects related to the provided information, rather than personal circumstances.`;
+        promptContent += `\nProvide bullet points of factual arguments I can use to contest this fine, based on the information provided including my description of the incident. Structure these points to incorporate and build upon my stated version of events and concerns. Focus on both my specific claims and technical/procedural aspects related to the provided information.`;
       }
     }
     

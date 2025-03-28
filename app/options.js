@@ -5,9 +5,10 @@ import { COLORS, SIZES, FONTS, SHADOWS } from '../constants/theme';
 import { useLanguage } from '../localization/i18n';
 
 export default function OptionsScreen() {
-  const { t } = useLanguage();
   const { result, fineId } = useLocalSearchParams();
   const [recommendedOption, setRecommendedOption] = useState('cancellation');
+   const { t, locale } = useLanguage();
+    const isRtl = locale === "he";
   
   // Set the recommended option based on the analysis result
   useEffect(() => {
@@ -45,8 +46,16 @@ export default function OptionsScreen() {
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.content}>
-        <Text style={styles.title}>{t('chooseNextStep')}</Text>
-        <Text style={styles.subtitle}>
+        <Text style={
+              isRtl
+                ? [styles.title, styles.textRtl, { textAlign: "left" }]
+                : styles.title
+            }>{t('chooseNextStep')}</Text>
+        <Text style={
+              isRtl
+                ? [styles.subtitle, styles.textRtl, { textAlign: "left" }]
+                : styles.subtitle
+            }>
           {result === 'correct' ? 
             t('analysisStrong') :
            result === 'partially' ? 
@@ -150,6 +159,9 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: COLORS.background,
+  },
+  textRtl: {
+    alignItems: "flex-start",
   },
   content: {
     flex: 1,

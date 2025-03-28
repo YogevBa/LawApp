@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, SafeAreaView, ScrollView, KeyboardAvoidingView, Platform, Alert, ActivityIndicator, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, SafeAreaView, ScrollView, KeyboardAvoidingView, Platform, Alert, ActivityIndicator, TouchableOpacity, TextInput } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 import { router } from 'expo-router';
 import { useDispatch } from 'react-redux';
@@ -9,6 +9,8 @@ import Card from '../components/Card';
 import InputField from '../components/InputField';
 import { useLanguage } from '../localization/i18n';
 import { analyzeFine, addFine } from '../store/finesSlice';
+import DateTimePickerModal from 'react-native-modal-datetime-picker';
+import { Ionicons } from '@expo/vector-icons';
 
 export default function CustomCaseScreen() {
   const dispatch = useDispatch();
@@ -18,6 +20,9 @@ export default function CustomCaseScreen() {
   const [formData, setFormData] = useState({
     fineNumber: '',
     issueDate: '',
+    actionDateTime: '',
+    offenseClauses: '',
+    factualDescription: '',
     amount: '',
     location: '',
     violationType: '',
@@ -25,6 +30,8 @@ export default function CustomCaseScreen() {
   });
 
   const [errors, setErrors] = useState({});
+  const [isDateTimePickerVisible, setDateTimePickerVisible] = useState(false);
+  const [isDatePickerVisible, setDatePickerVisible] = useState(false);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
 
   const validateForm = () => {
@@ -41,6 +48,21 @@ export default function CustomCaseScreen() {
       isValid = false;
     } else if (!/^\d{2}\/\d{2}\/\d{4}$/.test(formData.issueDate.trim())) {
       newErrors.issueDate = t('dateFormatInvalid');
+      isValid = false;
+    }
+    
+    if (!formData.actionDateTime.trim()) {
+      newErrors.actionDateTime = t('actionDateTimeRequired');
+      isValid = false;
+    }
+    
+    if (!formData.offenseClauses.trim()) {
+      newErrors.offenseClauses = t('offenseClausesRequired');
+      isValid = false;
+    }
+    
+    if (!formData.factualDescription.trim()) {
+      newErrors.factualDescription = t('factualDescriptionRequired');
       isValid = false;
     }
 
@@ -73,6 +95,38 @@ export default function CustomCaseScreen() {
     setErrors(newErrors);
     return isValid;
   };
+  
+  const showDateTimePicker = () => {
+    setDateTimePickerVisible(true);
+  };
+
+  const hideDateTimePicker = () => {
+    setDateTimePickerVisible(false);
+  };
+
+  const handleDateTimeConfirm = (dateTime) => {
+    // Format date and time as MM/DD/YYYY HH:MM
+    const formattedDateTime = `${(dateTime.getMonth()+1).toString().padStart(2, '0')}/${dateTime.getDate().toString().padStart(2, '0')}/${dateTime.getFullYear()} ${dateTime.getHours().toString().padStart(2, '0')}:${dateTime.getMinutes().toString().padStart(2, '0')}`;
+    
+    handleChange('actionDateTime', formattedDateTime);
+    hideDateTimePicker();
+  };
+  
+  const showDatePicker = () => {
+    setDatePickerVisible(true);
+  };
+
+  const hideDatePicker = () => {
+    setDatePickerVisible(false);
+  };
+
+  const handleDateConfirm = (date) => {
+    // Format date as MM/DD/YYYY
+    const formattedDate = `${(date.getMonth()+1).toString().padStart(2, '0')}/${date.getDate().toString().padStart(2, '0')}/${date.getFullYear()}`;
+    
+    handleChange('issueDate', formattedDate);
+    hideDatePicker();
+  };
 
   const handleChange = (field, value) => {
     setFormData({
@@ -99,6 +153,9 @@ export default function CustomCaseScreen() {
         const fineReport = {
           reportNumber: formData.fineNumber,
           date: formData.issueDate,
+          actionDateTime: formData.actionDateTime,
+          offenseClauses: formData.offenseClauses,
+          factualDescription: formData.factualDescription,
           location: formData.location,
           violation: formData.violationType,
           amount: formData.amount,
@@ -168,6 +225,7 @@ export default function CustomCaseScreen() {
       <KeyboardAvoidingView
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
         style={styles.keyboardAvoid}
+        keyboardVerticalOffset={Platform.OS === 'ios' ? 100 : 0}
       >
         <ScrollView contentContainerStyle={styles.scrollContainer}>
           <Text  style={
@@ -192,14 +250,104 @@ export default function CustomCaseScreen() {
               error={errors.fineNumber}
             />
 
+            <View style={styles.inputContainer}>
+              <Text style={
+                isRtl
+                  ? [styles.inputLabel, { alignSelf:'flex-start' }]
+                  : styles.inputLabel
+              }>{t('issueDate')}</Text>
+              <TouchableOpacity 
+                style={styles.dateTimePicker}
+                onPress={showDatePicker}
+              >
+                <View style={[styles.dateTimePickerContent, isRtl ? {flexDirection: 'row-reverse'} : {flexDirection: 'row'}]}>
+                  <Text style={
+                    formData.issueDate 
+                      ? (isRtl ? [styles.dateTimeText, { textAlign: "right", flex: 1 }] : [styles.dateTimeText, { flex: 1 }]) 
+                      : (isRtl ? [styles.dateTimePlaceholder, { textAlign: "right", flex: 1 }] : [styles.dateTimePlaceholder, { flex: 1 }])
+                  }>
+                    {formData.issueDate || t('dateFormat')}
+                  </Text>
+                  <Ionicons 
+                    name="calendar" 
+                    size={24} 
+                    color={COLORS.primary} 
+                    style={isRtl ? {marginRight: 8} : {marginLeft: 8}}
+                  />
+                </View>
+              </TouchableOpacity>
+              {errors.issueDate && <Text style={isRtl ? [styles.errorText, { textAlign: "right", alignSelf: "flex-end" }] : styles.errorText}>{errors.issueDate}</Text>}
+            </View>
+            
+            <View style={styles.inputContainer}>
+              <Text style={
+                isRtl
+                  ? [styles.inputLabel, { alignSelf: "flex-start" }]
+                  : styles.inputLabel
+              }>{t('actionDateTime')}</Text>
+              <TouchableOpacity 
+                style={styles.dateTimePicker}
+                onPress={showDateTimePicker}
+              >
+                <View style={[styles.dateTimePickerContent, isRtl ? {flexDirection: 'row-reverse'} : {flexDirection: 'row'}]}>
+                  <Text style={
+                    formData.actionDateTime 
+                      ? (isRtl ? [styles.dateTimeText, { textAlign: "right", flex: 1 }] : [styles.dateTimeText, { flex: 1 }]) 
+                      : (isRtl ? [styles.dateTimePlaceholder, { textAlign: "right", flex: 1 }] : [styles.dateTimePlaceholder, { flex: 1 }])
+                  }>
+                    {formData.actionDateTime || t('selectDateAndTime')}
+                  </Text>
+                  <Ionicons 
+                    name="calendar" 
+                    size={24} 
+                    color={COLORS.primary} 
+                    style={isRtl ? {marginRight: 8} : {marginLeft: 8}}
+                  />
+                </View>
+              </TouchableOpacity>
+              {errors.actionDateTime && <Text style={isRtl ? [styles.errorText, { textAlign: "right", alignSelf: "flex-end" }] : styles.errorText}>{errors.actionDateTime}</Text>}
+            </View>
+            
             <InputField
-              label={t('issueDate')}
-              value={formData.issueDate}
-              onChangeText={(text) => handleChange('issueDate', text)}
-              placeholder={t('dateFormat')}
-              keyboardType="numeric"
-              error={errors.issueDate}
+              label={t('offenseClauses')}
+              value={formData.offenseClauses}
+              onChangeText={(text) => handleChange('offenseClauses', text)}
+              placeholder={t('offenseClausesPlaceholder')}
+              multiline={true}
+              numberOfLines={3}
+              error={errors.offenseClauses}
             />
+            
+            <View style={{ height: 30 }} />
+            
+            <DateTimePickerModal
+              isVisible={isDateTimePickerVisible}
+              mode="datetime"
+              onConfirm={handleDateTimeConfirm}
+              onCancel={hideDateTimePicker}
+            />
+            
+            <DateTimePickerModal
+              isVisible={isDatePickerVisible}
+              mode="date"
+              onConfirm={handleDateConfirm}
+              onCancel={hideDatePicker}
+            />
+            
+            <View style={{ marginTop: 40 }}>
+              <InputField
+                label={t('factualDescription')}
+                value={formData.factualDescription}
+                onChangeText={(text) => handleChange('factualDescription', text)}
+                placeholder={t('factualDescriptionPlaceholder')}
+                multiline={true}
+                numberOfLines={3}
+                error={errors.factualDescription}
+                style={{ marginBottom: 20 }}
+              />
+            </View>
+
+            <View style={{ height: 60 }} />
 
             <InputField
               label={t('fineAmount')}
@@ -230,7 +378,7 @@ export default function CustomCaseScreen() {
               label={t('descriptionOfIncident')}
               value={formData.description}
               onChangeText={(text) => handleChange('description', text)}
-              placeholder={t('descriptionPlaceholder')}
+              placeholder={t('descriptionOfIncidentPlaceholder')}
               multiline={true}
               numberOfLines={6}
               error={errors.description}
@@ -287,10 +435,36 @@ export default function CustomCaseScreen() {
                         date.setDate(date.getDate() - randomDaysAgo);
                         const formattedDate = `${(date.getMonth()+1).toString().padStart(2, '0')}/${date.getDate().toString().padStart(2, '0')}/${date.getFullYear()}`;
                         
+                        // Generate a random time for actionDateTime
+                        const hours = Math.floor(Math.random() * 24).toString().padStart(2, '0');
+                        const minutes = Math.floor(Math.random() * 60).toString().padStart(2, '0');
+                        const actionDateTime = `${formattedDate} ${hours}:${minutes}`;
+                        
+                        // Sample offense clauses
+                        const offenseClauses = [
+                          'Traffic Ordinance § 27B, § 62A',
+                          'Road Safety Act § 12, § 144B',
+                          'Municipal Code § 510, § 322.1',
+                          'Highway Code § 65, § 72',
+                          'Traffic Regulations § 38, § 41'
+                        ];
+                        
+                        // Sample factual descriptions
+                        const factualDescriptions = [
+                          'Vehicle observed traveling at 65 km/h in a 50 km/h zone. Speed measured by radar. Driver was alone in vehicle.',
+                          'Vehicle parked in no parking zone. Signage clearly visible. Vehicle unattended at time of citation.',
+                          'Driver failed to stop at red light at intersection. Proceeded through intersection while signal was red.',
+                          'Vehicle observed making illegal U-turn in prohibited area. Driver admitted to officer they were aware of prohibition.',
+                          'Driver observed using handheld mobile device while operating vehicle. Phone held to ear for approximately 30 seconds.'
+                        ];
+                        
                         setFormData({
                           ...formData,
                           // Only fill if not already filled
                           issueDate: formData.issueDate || formattedDate,
+                          actionDateTime: formData.actionDateTime || actionDateTime,
+                          offenseClauses: formData.offenseClauses || offenseClauses[Math.floor(Math.random() * offenseClauses.length)],
+                          factualDescription: formData.factualDescription || factualDescriptions[Math.floor(Math.random() * factualDescriptions.length)],
                           amount: formData.amount || `$${Math.floor(100 + Math.random() * 300)}`,
                           location: formData.location || locations[Math.floor(Math.random() * locations.length)],
                           violationType: formData.violationType || violations[Math.floor(Math.random() * violations.length)],
@@ -326,6 +500,7 @@ const styles = StyleSheet.create({
   scrollContainer: {
     flexGrow: 1,
     padding: SIZES.medium,
+    paddingBottom: 100, // Add extra padding at the bottom to ensure visibility of buttons
   },
   title: {
     ...FONTS.bold,
@@ -345,6 +520,7 @@ const styles = StyleSheet.create({
   },
   buttonContainer: {
     marginTop: SIZES.large,
+    marginBottom: SIZES.large,
   },
   button: {
     width: '100%',
@@ -382,5 +558,42 @@ const styles = StyleSheet.create({
     ...FONTS.medium,
     fontSize: SIZES.font,
     color: COLORS.secondary,
+  },
+  inputContainer: {
+    marginBottom: SIZES.medium,
+  },
+  inputLabel: {
+    ...FONTS.medium,
+    fontSize: SIZES.font,
+    color: COLORS.text,
+    marginBottom: SIZES.base,
+  },
+  dateTimePicker: {
+    height: 50,
+    borderWidth: 1,
+    borderColor: COLORS.lightGray,
+    borderRadius: SIZES.base,
+    paddingHorizontal: SIZES.font,
+    justifyContent: 'center',
+  },
+  dateTimePickerContent: {
+    width: '100%',
+    alignItems: 'center',
+  },
+  dateTimeText: {
+    ...FONTS.regular,
+    fontSize: SIZES.font,
+    color: COLORS.text,
+  },
+  dateTimePlaceholder: {
+    ...FONTS.regular,
+    fontSize: SIZES.font,
+    color: COLORS.lightGray,
+  },
+  errorText: {
+    ...FONTS.regular,
+    fontSize: SIZES.small,
+    color: COLORS.error || 'red',
+    marginTop: 5,
   },
 });
