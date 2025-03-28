@@ -15,10 +15,11 @@ import * as DocumentPicker from 'expo-document-picker';
 import * as FileSystem from 'expo-file-system';
 
 export default function UploadDocumentScreen() {
-  const { t } = useLanguage();
   const [uploadedFiles, setUploadedFiles] = useState([]);
   const [uploading, setUploading] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
+  const { t, locale } = useLanguage();
+    const isRtl = locale === "he";
   
   // Request permissions when component mounts
   useEffect(() => {
@@ -475,8 +476,16 @@ export default function UploadDocumentScreen() {
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView contentContainerStyle={styles.scrollContainer}>
-        <Text style={styles.title}>{t('uploadFineDocument')}</Text>
-        <Text style={styles.subtitle}>
+        <Text  style={
+              isRtl
+                ? [styles.title, styles.textRtl, { textAlign: "left" }]
+                : styles.title
+            }>{t('uploadFineDocument')}</Text>
+        <Text  style={
+              isRtl
+                ? [styles.subtitle, styles.textRtl, { textAlign: "left" }]
+                : styles.subtitle
+            }>
           {t('uploadDocumentSubtitle')}
         </Text>
 
@@ -643,12 +652,12 @@ export default function UploadDocumentScreen() {
           </View>
 
           <View style={styles.buttonContainer}>
-            <Button
+            {/* <Button
               title={t('submitDocuments')}
               onPress={handleSubmit}
               type="primary"
               style={styles.button}
-            />
+            /> */}
             <View style={styles.buttonGap} />
             <Button
               title={t('cancel')}
@@ -668,6 +677,9 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: COLORS.background,
+  },
+  textRtl: {
+    alignItems: "flex-start",
   },
   scrollContainer: {
     padding: SIZES.medium,

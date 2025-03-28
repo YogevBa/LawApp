@@ -1,9 +1,9 @@
 // Hebrew localization strings
 export default {
   // App general
-  appName: 'ליגל איי',
-  appSubtitle: 'מערכת לניתוח וערעור דוחות תנועה',
-  appDescription: 'העוזר המשפטי המופעל על ידי בינה מלאכותית לניתוח דוחות תנועה ויצירת בקשות ערעור יעילות.',
+  appName: 'FINE AI',
+  appSubtitle: 'כלי בינה מלאכותית להתמודדות עם קנסות',
+  appDescription:'מערכת FINE AI  הינה כלי בינה מלאכותית שמסייעת לך להגיע לתוצאה המיטבית בהתמודדות עם קנסות',
   
   // Common actions
   back: 'חזרה',
@@ -40,18 +40,20 @@ export default {
   // Home screen
   featuredFines: 'כלים מובילים',
   reportNewFine: 'דווח על דוח חדש',
-  reportFine: 'דווח על דוח תנועה',
-  chooseSubmitMethod: 'בחר כיצד ברצונך להגיש את מידע דוח התנועה שלך:',
+  reportFine: 'העלה דו״ח חדש',
+  chooseSubmitMethod: 'ברשותך מספר אפשרויות להעלאת הדו״ח למערכת:',
   viewMyFines: 'צפה בדוחות שלי',
   accountSettings: 'הגדרות חשבון',
-  customCase: 'הזן מקרה מותאם אישית',
+  customCase: 'הזן את פרטי הדו״ח',
   
   // Features
   howItWorks: 'איך זה עובד:',
-  feature1: 'צפה ונהל את דוחות התנועה שלך',
-  feature2: 'קבל ניתוח מונע-בינה מלאכותית למקרה שלך',
-  feature3: 'צור בקשות ערעור מותאמות אישית',
-  feature4: 'הגש ערעורים ועקוב אחר מצבם',
+  feature1: 'המשתמש מעלה את הדו״ח למערכת.',
+  feature2: 'הכלי בוחן את הדו״ח ומספק תובנות והמלצות.',
+  feature3: 'המשתמש מעלה את טענותיו ו/או ראיותיו ביחס לדו״ח.',
+  feature4: 'הכלי בוחן את הטענות ביחד עם כלל החומרים הרלוונטים ומספק תובנות והמלצות.',
+  feature5: 'המשתמש בוחר אם לאמץ את המלצות הכלי (להגיש בקשה לביטול דו״ח/להישפט/לשלם את הקנס.',
+
   
   // Statistics
   statistics: 'הסטטיסטיקות שלך',
@@ -60,7 +62,7 @@ export default {
   successRate: 'אחוז הצלחה',
   
   // Fines list
-  yourFines: 'דוחות התנועה שלך',
+  yourFines: 'הדוחות שלי',
   tapToView: 'הקש על דוח לצפייה בפרטים',
   noFines: 'אין לך דוחות עדיין',
   paid: 'שולם',
@@ -72,7 +74,7 @@ export default {
   enterManually: 'הזנה ידנית',
   scanBarcode: 'סריקת ברקוד',
   takePhoto: 'צילום תמונה',
-  uploadDocument: 'העלאת מסמך',
+  uploadDocument: 'העלאת דו״ח',
   
   // Manual entry and custom case
   describeYourFine: 'תאר את הדוח שלך',
@@ -85,7 +87,7 @@ export default {
   descPlaceholder: 'תאר את הנסיבות של הדוח, המיקום וכל פרט אחר שעשוי להיות רלוונטי...',
   
   // Custom case specific
-  customCase: 'הזן מקרה מותאם אישית',
+  customCase: 'הזן את פרטי הדו״ח',
   customCaseDescription: 'אנא ספק פרטים על דוח התנועה שלך כדי לקבל ניתוח ועזרה בערעור מבוססי בינה מלאכותית.',
   fineNumber: 'מספר דוח',
   enterFineNumber: 'הזן מספר דוח',
@@ -183,11 +185,13 @@ export default {
   // Profile
   myProfile: 'הפרופיל שלי',
   personalInfo: 'מידע אישי',
-  finesStats: 'סטטיסטיקת הדוחות שלך',
+  finesStats: 'סטטוס הדוחות שלי',
   totalFines: 'סה״כ דוחות',
-  pending: 'ממתינים',
-  appealed: 'מעורערים',
-  successful: 'מוצלחים',
+  payedReports: 'דוחות ששולמו',
+  requestHandledBy: 'בקשות בטיפול הרשות',
+  requestTrials: 'בקשות להישפט',
+  appealCancellationPostponedReport: 'בקשות לביטול דו״ח שנדחו',
+  appealForPartialReport: 'בקשות לביטול דו״ח שהתקבלו באופן חלקי/מלא',
   editInfo: 'ערוך מידע',
   
   // Settings
@@ -279,9 +283,9 @@ export default {
   close: 'סגור',
   
   // Upload Document
-  uploadFineDocument: 'העלאת מסמך דוח',
-  uploadDocumentSubtitle: 'העלה את מסמכי דוח התנועה שלך לניתוח באמצעות בינה מלאכותית וסיוע בערעור.',
-  uploadYourFineDocument: 'העלה את מסמך הדוח שלך',
+  uploadFineDocument: 'העלאת דו״ח',
+  uploadDocumentSubtitle: 'העלה את הדו״ח שלך באמצעות צילום או יבוא קובץ הדו״ח',
+  uploadYourFineDocument: 'העלה את הדוח',
   uploadFile: 'העלאת קובץ',
   takeNewPhoto: 'צילום תמונה חדשה',
   processing: 'מעבד...',

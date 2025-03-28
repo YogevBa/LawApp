@@ -1,7 +1,7 @@
 // English localization strings
 export default {
   // App general
-  appName: 'Legal AI',
+  appName: 'FINE AI',
   appSubtitle: 'Traffic Fine Analysis & Appeal System',
   appDescription: 'Your AI-powered legal assistant for analyzing traffic fines and creating effective appeal requests.',
   

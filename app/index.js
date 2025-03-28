@@ -1,45 +1,95 @@
+import { Link } from "expo-router";
 import React from "react";
 import {
-  View,
-  Text,
-  StyleSheet,
+  Pressable,
   SafeAreaView,
   ScrollView,
-  TouchableOpacity,
-  Pressable,
+  StyleSheet,
+  Text,
+  View,
 } from "react-native";
-import { router, Link } from "expo-router";
-import { COLORS, SIZES, FONTS } from "../constants/theme";
 import Card from "../components/Card";
+import { COLORS, FONTS, SIZES } from "../constants/theme";
 import { useLanguage } from "../localization/i18n";
 
 export default function WelcomeScreen() {
-  const { t } = useLanguage();
+  const { t, locale } = useLanguage();
+  const isRtl = locale === "he";
+
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView contentContainerStyle={styles.scrollContainer}>
         <View style={styles.logoContainer}>
-          <Text style={styles.appTitle}>Legal AI</Text>
+          <Text style={styles.appTitle}>FINE AI</Text>
           <Text style={styles.appSubtitle}>{t("appSubtitle")}</Text>
         </View>
 
-        <Card style={styles.card}>
+        <Card style={[styles.card, isRtl && styles.cardRtl]}>
           <Text style={styles.title}>{t("welcome")}</Text>
-          <Text style={styles.description}>{t("appDescription")}</Text>
+          <Text
+            style={
+              isRtl
+                ? [styles.description, styles.textRtl, { textAlign: "left" }]
+                : styles.description
+            }
+          >
+            {t("appDescription")}
+          </Text>
 
-          <View style={styles.infoContainer}>
+          <View
+            style={
+              isRtl
+                ? [styles.infoContainer, styles.textRtl]
+                : styles.infoContainer
+            }
+          >
             <Text style={styles.infoTitle}>{t("howItWorks")}</Text>
-            <Text style={styles.infoText}>1. {t("feature1")}</Text>
-            <Text style={styles.infoText}>2. {t("feature2")}</Text>
-            <Text style={styles.infoText}>3. {t("feature3")}</Text>
-            <Text style={styles.infoText}>4. {t("feature4")}</Text>
+            <Text
+              style={
+                isRtl
+                  ? [styles.infoText, styles.textRtl, { textAlign: "left" }]
+                  : styles.infoText
+              }
+            >
+              1. {t("feature1")}
+            </Text>
+            <Text
+              style={
+                isRtl
+                  ? [styles.infoText, styles.textRtl, { textAlign: "left" }]
+                  : styles.infoText
+              }
+            >
+              2. {t("feature2")}
+            </Text>
+            <Text
+              style={
+                isRtl
+                  ? [styles.infoText, styles.textRtl, { textAlign: "left" }]
+                  : styles.infoText
+              }
+            >
+              3. {t("feature3")}
+            </Text>
+            <Text
+              style={
+                isRtl
+                  ? [styles.infoText, styles.textRtl, { textAlign: "left" }]
+                  : styles.infoText
+              }
+            >
+              4. {t("feature4")}
+            </Text>
+            <Text
+              style={
+                isRtl
+                  ? [styles.infoText, styles.textRtl, { textAlign: "left" }]
+                  : styles.infoText
+              }
+            >
+              5. {t("feature5")}
+            </Text>
           </View>
-
-          {/* <Button 
-            title={t('getStarted')} 
-            onPress={() => router.push('/login')} 
-            style={styles.button}
-          /> */}
 
           <Link href="/login" asChild>
             <Pressable style={styles.button}>
@@ -83,11 +133,15 @@ const styles = StyleSheet.create({
     width: "100%",
     maxWidth: 500,
   },
+  cardRtl: {
+    direction: "rtl",
+  },
   title: {
     ...FONTS.bold,
     fontSize: SIZES.extraLarge,
     color: COLORS.primary,
     marginBottom: SIZES.medium,
+    alignSelf: "center",
   },
   description: {
     ...FONTS.regular,
@@ -95,6 +149,9 @@ const styles = StyleSheet.create({
     color: COLORS.text,
     marginBottom: SIZES.large,
     lineHeight: SIZES.large * 1.4,
+  },
+  textRtl: {
+    alignItems: "flex-start",
   },
   infoContainer: {
     backgroundColor: COLORS.background,
@@ -128,5 +185,5 @@ const styles = StyleSheet.create({
     ...FONTS.semiBold,
     fontSize: SIZES.large,
     color: COLORS.white,
-  }
+  },
 });

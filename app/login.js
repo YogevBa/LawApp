@@ -8,11 +8,13 @@ import InputField from '../components/InputField';
 import { useLanguage } from '../localization/i18n';
 
 export default function LoginScreen() {
-  const { t } = useLanguage();
+  const { t,locale } = useLanguage();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [emailError, setEmailError] = useState('');
   const [passwordError, setPasswordError] = useState('');
+
+    const isRtl = locale === "he";
 
   const validateInputs = () => {
     let isValid = true;
@@ -61,7 +63,11 @@ export default function LoginScreen() {
 
         <Card style={styles.card}>
           <Text style={styles.title}>{t('login')}</Text>
-          <Text style={styles.description}>
+          <Text style={
+              isRtl
+                ? [styles.description, styles.textRtl, { textAlign: "left" }]
+                : styles.description
+            }>
             {t('loginDesc')}
           </Text>
 
@@ -113,6 +119,9 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: COLORS.background,
   },
+  textRtl: {
+    alignItems: "flex-start",
+  },
   scrollContainer: {
     flexGrow: 1,
     padding: SIZES.medium,
@@ -144,6 +153,7 @@ const styles = StyleSheet.create({
     fontSize: SIZES.extraLarge,
     color: COLORS.primary,
     marginBottom: SIZES.medium,
+    textAlign: 'center',
   },
   description: {
     ...FONTS.regular,

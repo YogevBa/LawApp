@@ -11,8 +11,9 @@ import { useLanguage } from '../localization/i18n';
 import { analyzeFine, addFine } from '../store/finesSlice';
 
 export default function CustomCaseScreen() {
-  const { t } = useLanguage();
   const dispatch = useDispatch();
+  const { t, locale } = useLanguage();
+    const isRtl = locale === "he";
   
   const [formData, setFormData] = useState({
     fineNumber: '',
@@ -169,8 +170,16 @@ export default function CustomCaseScreen() {
         style={styles.keyboardAvoid}
       >
         <ScrollView contentContainerStyle={styles.scrollContainer}>
-          <Text style={styles.title}>{t('customCase')}</Text>
-          <Text style={styles.subtitle}>
+          <Text  style={
+              isRtl
+                ? [styles.title, styles.textRtl, { textAlign: "left" }]
+                : styles.title
+            }>{t('customCase')}</Text>
+          <Text  style={
+              isRtl
+                ? [styles.subtitle, styles.textRtl, { textAlign: "left" }]
+                : styles.subtitle
+            }>
             {t('customCaseDescription')}
           </Text>
 
@@ -307,6 +316,9 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: COLORS.background,
+  },
+  textRtl: {
+    alignItems: "flex-start",
   },
   keyboardAvoid: {
     flex: 1,

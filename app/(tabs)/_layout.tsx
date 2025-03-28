@@ -13,7 +13,8 @@ import { useLanguage } from '@/localization/i18n';
 
 export default function TabLayout() {
   const colorScheme = useColorScheme();
-  const { t } = useLanguage();
+  const { t, locale } = useLanguage();
+  const isRtl = locale === "he";
 
   return (
     <Tabs
@@ -49,17 +50,17 @@ export default function TabLayout() {
       <Tabs.Screen
         name="index"
         options={{
-          title: 'Home', // Always English
-          headerTitle: () => (
-            <View style={styles.headerTitleContainer}>
-              <Image 
-                source={require('@/assets/images/icon.png')} 
-                style={styles.headerIcon} 
-              />
-              <ThemedText type="title" style={styles.headerTitle}>Legal AI</ThemedText>
-            </View>
-          ),
-          tabBarLabel: 'Home', // Always English
+          title: t('tab_home'), // Always English
+          // headerTitle: () => (
+          //   <View style={styles.headerTitleContainer}>
+          //     <Image 
+          //       source={require('@/assets/images/icon.png')} 
+          //       style={styles.headerIcon} 
+          //     />
+          //     <ThemedText type="title" style={styles.headerTitle}>Fine AI</ThemedText>
+          //   </View>
+          // ),
+          tabBarLabel: t('tab_home'), // Always English
           tabBarIcon: ({ color }) => <IconSymbol size={28} name="house.fill" color={color as string} />,
         }}
       />
@@ -67,8 +68,8 @@ export default function TabLayout() {
         name="fines"
         options={{
           title: 'My Fines', // Always English
-          headerTitle: 'My Fines', // Always English 
-          tabBarLabel: 'My Fines', // Always English
+          headerTitle: t('tab_fines'), // Always English 
+          tabBarLabel: t('tab_fines'), // Always English
           tabBarIcon: ({ color }) => <IconSymbol size={28} name="list.bullet" color={color as string} />,
         }}
       />
@@ -76,8 +77,8 @@ export default function TabLayout() {
         name="profile"
         options={{
           title: 'Profile', // Always English
-          headerTitle: 'My Profile', // Always English
-          tabBarLabel: 'Profile', // Always English
+          headerTitle: t('tab_profile'), // Always English
+          tabBarLabel: t('tab_profile'), // Always English
           tabBarIcon: ({ color }) => <IconSymbol size={28} name="person.fill" color={color as string} />,
         }}
       />

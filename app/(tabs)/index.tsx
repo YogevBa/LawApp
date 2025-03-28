@@ -11,8 +11,8 @@ import { router } from 'expo-router';
 import { useLanguage } from '@/localization/i18n';
 
 export default function HomeScreen() {
-  // Use the language context
   const { t, locale } = useLanguage();
+  const isRtl = locale === "he";
   return (
     <ParallaxScrollView
       headerBackgroundColor={{ light: '#A1CEDC', dark: '#1D3D47' }}
@@ -24,35 +24,64 @@ export default function HomeScreen() {
       }>
       <SafeAreaView style={styles.container}>
         <ThemedView style={styles.contentContainer}>
-          <ThemedText type="subtitle">{t('welcome')}</ThemedText>
-          <ThemedText style={styles.description}>
+          <ThemedText style={{alignSelf:'center'}} type="subtitle">{t('welcome')}</ThemedText>
+          <ThemedText style={
+                isRtl
+                  ? [styles.description, styles.textRtl, { textAlign: "left" }]
+                  : styles.description
+              }>
             {t('appDescription')}
           </ThemedText>
           
           <ThemedView style={styles.featuresContainer}>
             <ThemedView style={styles.featureItem}>
               <Ionicons name="document-text-outline" size={24} color={COLORS.primary} />
-              <ThemedText style={styles.featureText}>{t('feature1')}</ThemedText>
+              <ThemedText style={
+                isRtl
+                  ? [styles.featureText, styles.textRtl, { textAlign: "left" }]
+                  : styles.featureText
+              }>{t('feature1')}</ThemedText>
             </ThemedView>
             
             <ThemedView style={styles.featureItem}>
               <Ionicons name="analytics-outline" size={24} color={COLORS.primary} />
-              <ThemedText style={styles.featureText}>{t('feature2')}</ThemedText>
+              <ThemedText style={
+                isRtl
+                  ? [styles.featureText, styles.textRtl, { textAlign: "left" }]
+                  : styles.featureText
+              }>{t('feature2')}</ThemedText>
             </ThemedView>
             
             <ThemedView style={styles.featureItem}>
               <Ionicons name="create-outline" size={24} color={COLORS.primary} />
-              <ThemedText style={styles.featureText}>{t('feature3')}</ThemedText>
+              <ThemedText style={
+                isRtl
+                  ? [styles.featureText, styles.textRtl, { textAlign: "left" }]
+                  : styles.featureText
+              }>{t('feature3')}</ThemedText>
             </ThemedView>
             
             <ThemedView style={styles.featureItem}>
               <Ionicons name="send-outline" size={24} color={COLORS.primary} />
-              <ThemedText style={styles.featureText}>{t('feature4')}</ThemedText>
+              <ThemedText style={
+                isRtl
+                  ? [styles.featureText, styles.textRtl, { textAlign: "left" }]
+                  : styles.featureText
+              }>{t('feature4')}</ThemedText>
+            </ThemedView>
+
+            <ThemedView style={styles.featureItem}>
+              <Ionicons name="cube-outline" size={24} color={COLORS.primary} />
+              <ThemedText style={
+                isRtl
+                  ? [styles.featureText, styles.textRtl, { textAlign: "left" }]
+                  : styles.featureText
+              }>{t('feature5')}</ThemedText>
             </ThemedView>
           </ThemedView>
           
           <ThemedView style={styles.actionsContainer}>
-            <ThemedText type="subtitle">{t('reportFine')}</ThemedText>
+            <ThemedText style={{alignSelf:'center'}} type="subtitle">{t('reportFine')}</ThemedText>
             <ThemedText style={styles.actionDescription}>
               {t('chooseSubmitMethod')}
             </ThemedText>
@@ -86,24 +115,6 @@ export default function HomeScreen() {
               style={styles.actionButton}
             />
           </ThemedView>
-          
-          <ThemedView style={styles.statsContainer}>
-            <ThemedText type="subtitle">{t('statistics')}</ThemedText>
-            <ThemedView style={styles.statsRow}>
-              <ThemedView style={styles.statItem}>
-                <ThemedText style={styles.statNumber}>0</ThemedText>
-                <ThemedText style={styles.statLabel}>{t('activeCases')}</ThemedText>
-              </ThemedView>
-              <ThemedView style={styles.statItem}>
-                <ThemedText style={styles.statNumber}>0</ThemedText>
-                <ThemedText style={styles.statLabel}>{t('appealsCreated')}</ThemedText>
-              </ThemedView>
-              <ThemedView style={styles.statItem}>
-                <ThemedText style={styles.statNumber}>0%</ThemedText>
-                <ThemedText style={styles.statLabel}>{t('successRate')}</ThemedText>
-              </ThemedView>
-            </ThemedView>
-          </ThemedView>
         </ThemedView>
       </SafeAreaView>
     </ParallaxScrollView>
@@ -114,6 +125,9 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 16,
+  },
+  textRtl: {
+    alignItems: "flex-start",
   },
   appLogo: {
     height: 100,
@@ -155,6 +169,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
     marginTop: 8,
     marginBottom: 16,
+    alignSelf: 'center',
   },
   actionButton: {
     marginVertical: 8,
