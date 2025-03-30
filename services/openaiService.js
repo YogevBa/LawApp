@@ -1,6 +1,6 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import i18n from '../localization/i18n';
-import ENV from '../.env.js';
+import ENV from '../env.js';
 
 // API URL for OpenAI
 const API_URL = ENV.API_URL;
@@ -122,6 +122,7 @@ export async function analyzeFineReport(fineReport) {
     // Get API key
     const apiKey = await getApiKey();
     console.log("Retrieved API key for analysis:", apiKey ? "API key found" : "No API key found");
+    console.log('🔐 Final API Key:', apiKey); // <---- This line!
     if (!apiKey) {
       console.error("OpenAI API key is missing");
       throw new Error('OpenAI API key is missing - please set an API key in your profile settings');
