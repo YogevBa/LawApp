@@ -19,17 +19,18 @@
       "bundleIdentifier": "com.lawapp.app"
     },
     "android": {
+      "package": "com.lawapp.app",
+      "versionCode": 1,
+      "permissions": [
+        "INTERNET",
+        "CAMERA",
+        "READ_EXTERNAL_STORAGE",
+        "WRITE_EXTERNAL_STORAGE"
+      ],
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      },
-      "package": "com.lawapp.app",
-      "permissions": [
-        "READ_EXTERNAL_STORAGE",
-        "WRITE_EXTERNAL_STORAGE",
-        "CAMERA"
-      ],
-      "versionCode": 1
+      }
     },
     "web": {
       "bundler": "metro",
@@ -40,15 +41,14 @@
     "experiments": {
       "typedRoutes": true
     },
-   "extra": {
-  "router": {
-    "basename": "/Legal.ai",
-    "origin": "https://yogevba.github.io"
-  },
-  "eas": {
-    "projectId": "f24fcb81-0b8a-4613-a924-4d19cea7a5a1"
-  }
-}
-
+    "extra": {
+      "router": {
+        "basename": "/Legal.ai",
+        "origin": "https://yogevba.github.io"
+      },
+      "eas": {
+        "projectId": "f24fcb81-0b8a-4613-a924-4d19cea7a5a1"
+      }
+    }
   }
 }
